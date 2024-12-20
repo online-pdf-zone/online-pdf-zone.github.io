@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+
+    <title>Images to PDF Converter</title>
+
+</head>
+<body>
+    <header>
+        <nav>
+            <h1><a class="title-text" href="../index.html">Online PDF Zone</a></h1>
+
+        </nav>
+    </header>
+
+    <main>
+        <section class="tool-section">
+            <h1>Images to PDF</h1>
+            <p>Select images and convert them into a PDF document.</p>
+            <div class="file-upload">
+                <input type="file" class="btn" id="imageUpload" multiple accept="image/*">
+                <button id="convertToPdf" class="btn">Convert to PDF</button>
+            </div>
+            <div id="imagePreview" class="image-preview"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Online PDF Zone. All rights reserved.</p>
+    </footer>
+
+    <!-- Include jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <script>
+        let files = [];
+
+        document.getElementById('imageUpload').addEventListener('change', function (event) {
+            // Store the selected files for later processing
+            files = Array.from(event.target.files); // File order preserved
+        });
+
+        document.getElementById('convertToPdf').addEventListener('click', function () {
+        if (files.length === 0) {
+            alert('Please select files before converting!');
+            return;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF();
+
+        files.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.src = e.target.result;
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    context.drawImage(img, 0, 0);
+
+                    // Automatically detect image type and save in the correct format
+                    const imgData = canvas.toDataURL(file.type);
+
+                    if (index > 0) {
+                        pdf.addPage();
+                    }
+                    const imgWidth = 180;
+                    const imgHeight = (img.height * imgWidth) / img.width;
+                    pdf.addImage(imgData, file.type.includes('png') ? 'PNG' : 'JPEG', 15, 10, imgWidth, imgHeight);
+                    if (index === files.length - 1) {
+                        pdf.save('images.pdf');
+                    }
+                };
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    </script>
+</body>
+</html>

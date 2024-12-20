@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <title>HTML to PDF</title>
+
+</head>
+<body>
+    <header>
+        <nav>
+            <h1><a class="title-text" href="../index.html">PDF Tools</a></h1>
+        </nav>
+    </header>
+
+    <main>
+        <section class="tool-section">
+            <h1>HTML to PDF</h1>
+            <p>Enter or upload HTML content to convert it into a PDF document.</p>
+            <p>Please note that this works for simple HTML!</p>
+
+            <div class="textarea-container">
+                <textarea id="htmlInput" placeholder="Enter your HTML content here..."></textarea>
+                <input type="file" id="htmlFileUpload" accept=".html,.htm" class="btn">
+                <button id="convertToPdf" class="btn">Convert to PDF</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Online PDF Zone. All rights reserved.</p>
+    </footer>
+
+    <!-- Include jsPDF and html2canvas Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        document.getElementById('convertToPdf').addEventListener('click', function () {
+            const htmlContent = document.getElementById('htmlInput').value;
+            if (!htmlContent.trim()) {
+                alert('Please enter or upload HTML content before converting!');
+                return;
+            }
+        
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+        
+            // Create a hidden container for rendering the HTML
+            const tempContainer = document.createElement('div');
+            tempContainer.style.width = `${pageWidth * 3.78}px`; // Scale to fit A4 width
+            tempContainer.style.margin = '0 auto';
+            tempContainer.style.background = '#fff'; // Ensure a white background
+            tempContainer.innerHTML = htmlContent;
+        
+            document.body.appendChild(tempContainer);
+        
+            html2canvas(tempContainer, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = pageWidth;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+                let heightLeft = imgHeight;
+                let position = 0;
+        
+                // Add the image to the PDF, split into pages if necessary
+                while (heightLeft > 0) {
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                    position = 0;
+                    if (heightLeft > 0) {
+                        pdf.addPage();
+                    }
+                }
+        
+                // Download the PDF
+                pdf.save('html.pdf');
+        
+                // Cleanup
+                document.body.removeChild(tempContainer);
+            }).catch(error => {
+                console.error('Error generating PDF:', error);
+                alert('An error occurred while generating the PDF. Please simplify the HTML and try again.');
+            });
+        });
+        </script>
+        
+</body>
+</html>

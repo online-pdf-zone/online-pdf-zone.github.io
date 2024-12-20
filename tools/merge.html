@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+    <title>Merge PDF</title>
+
+</head>
+<body>
+    <header>
+        <nav>
+            <h1><a class="title-text" href="../index.html">Online PDF Zone</a></h1>
+        </nav>
+    </header>
+
+    <main>
+        <section class="tool-section">
+            <h1>Merge PDF</h1>
+            <p>Upload multiple PDF files to merge them into one.</p>
+            <div class="file-upload">
+                <input type="file" id="pdfFilesUpload" multiple accept=".pdf" class="btn">
+                <button id="mergePdfButton" class="btn">Merge PDF</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Online PDF Zone. All rights reserved.</p>
+    </footer>
+
+    <!-- Include Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+
+    <script>
+        const pdfFilesUpload = document.getElementById('pdfFilesUpload');
+        const mergePdfButton = document.getElementById('mergePdfButton');
+
+        mergePdfButton.addEventListener('click', async () => {
+            const files = Array.from(pdfFilesUpload.files); // Ensure file order is maintained
+            if (files.length < 2) {
+                alert("Please select at least two PDF files to merge!");
+                return;
+            }
+
+            try {
+                const { PDFDocument } = PDFLib;
+                const mergedPdf = await PDFDocument.create();
+
+                for (const file of files) {
+                    const arrayBuffer = await file.arrayBuffer();
+                    const pdf = await PDFDocument.load(arrayBuffer);
+
+                    const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+                    copiedPages.forEach(page => mergedPdf.addPage(page));
+                }
+
+                // Serialize the merged PDF
+                const mergedPdfBytes = await mergedPdf.save();
+
+                // Create a Blob and download the merged PDF
+                const blob = new Blob([mergedPdfBytes], { type: "application/pdf" });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'merged.pdf';
+                link.click();
+            } catch (error) {
+                console.error('Error merging PDFs:', error);
+                alert("An error occurred while merging the PDF files.");
+            }
+        });
+    </script>
+</body>
+</html>

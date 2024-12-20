@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+
+    <title>Text to PDF</title>
+
+</head>
+<body>
+    <header>
+        <nav>
+            <h1><a class="title-text" href="../index.html">PDF Tools</a></h1>
+        </nav>
+    </header>
+
+    <main>
+        <section class="tool-section">
+            <h1>Text to PDF</h1>
+            <p>Enter or upload your text to convert it into a downloadable PDF document.</p>
+
+            <div class="textarea-container">
+                <textarea id="textInput" placeholder="Enter your text here..."></textarea>
+                <input type="file" id="textFileUpload" accept=".txt" class="btn">
+                <button id="convertToPdf" class="btn">Convert to PDF</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024  Online PDF Zone. All rights reserved.</p>
+    </footer>
+
+    <!-- Include jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    <script>
+        // Load text from a .txt file
+        document.getElementById('textFileUpload').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('textInput').value = e.target.result;
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        // Convert text to PDF
+        document.getElementById('convertToPdf').addEventListener('click', function () {
+            const text = document.getElementById('textInput').value;
+            if (!text.trim()) {
+                alert('Please enter or upload text before converting!');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF();
+
+            // Split the text into lines to handle large text
+            const lineHeight = 10;
+            const margin = 10;
+            const maxLineWidth = pdf.internal.pageSize.getWidth() - 2 * margin;
+            const lines = pdf.splitTextToSize(text, maxLineWidth);
+
+            let cursorY = margin;
+
+            // Add text line by line, adding pages as needed
+            lines.forEach((line) => {
+                if (cursorY + lineHeight > pdf.internal.pageSize.getHeight() - margin) {
+                    pdf.addPage();
+                    cursorY = margin;
+                }
+                pdf.text(line, margin, cursorY);
+                cursorY += lineHeight;
+            });
+
+            // Save the PDF
+            pdf.save('text.pdf');
+        });
+    </script>
+</body>
+</html>
