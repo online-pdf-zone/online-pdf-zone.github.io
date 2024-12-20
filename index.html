@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online PDF Zone</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            z-index: 1000;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .modal-content {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            text-align: right;
+        }
+
+        .modal-footer button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal-footer button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Dimmed background when modal is active */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .buy-coffee-button {
+            background-color: #ff813f;
+            color: #fff;
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+            max-width: 200px;
+            text-align: center;
+	    }
+
+	    .buy-coffee-button:hover {
+		    background-color: #e76b2f;
+	    }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#tools">Tools</a></li>
+                <li><a href="#" id="openAbout">About</a></li>
+                <li><a href="#" id="openCredits">Credits</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <h1>Online PDF Zone</h1>
+            <p>Convert, Merge and Transform your PDF files for free.</p>
+            <a href="#tools" class="btn-primary">Explore Tools</a>
+        </section>
+
+        <section id="tools" class="tools-section">
+            <h2>Tools</h2>
+            <div class="tools-container">
+                <div class="tool-card">
+                    <img src="./merge-pdf.png" alt="Merge PDF">
+                    <h3>Merge PDF</h3>
+                    <p>Combine multiple PDFs into a single document.</p>
+                    <a href="./tools/merge.html" class="btn">Use Tool</a>
+                </div>
+
+                <div class="tool-card">
+                    <img src="./image-to-pdf.png" alt="Images to PDF">
+                    <h3>Images to PDF</h3>
+                    <p>Turn your images into a PDF file.</p>
+                    <a href="./tools/images-to-pdf.html" class="btn">Use Tool</a>
+                </div>
+
+                <div class="tool-card">
+                    <img src="./html-to-pdf.png" alt="HTML to PDF">
+                    <h3>HTML to PDF</h3>
+                    <p>Convert HTML files or web pages to PDF format.</p>
+                    <a href="./tools/html-to-pdf.html" class="btn">Use Tool</a>
+                </div>
+
+                <div class="tool-card">
+                    <img src="./text-to-pdf.png" alt="Text to PDF">
+                    <h3>Text to PDF</h3>
+                    <p>Convert plain text files into PDF documents.</p>
+                    <a href="./tools/text-to-pdf.html" class="btn">Use Tool</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Online PDF Zone. All rights reserved.</p>
+    </footer>
+
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-header">About</div>
+        <div class="modal-content">
+            <p>Welcome to Online PDF Zone! This platform provides you with free tools to manipulate PDF files with ease. The documents are not stored since this is a static site.</p>
+            <p>I, <a href="https://www.instagram.com/creatioexnihil00/">creatioexnihil00</a> made this so I can make PDFs from images (and added a few other features) so it will not be a daily limit, ads or a paywall.</p>
+            <p>This is useful for me and might be useful for you!</p>
+            <a href="https://www.buymeacoffee.com/creatioexnihilo" target="_blank">
+                <button class="buy-coffee-button">☕ Buy Me a Coffee</button>
+            </a>
+        </div>
+        <div class="modal-footer">
+            <button id="closeAbout">Close</button>
+        </div>
+    </div>
+
+    <!-- Credits Modal -->
+    <div id="creditsModal" class="modal">
+        <div class="modal-header">Credits</div>
+        <div class="modal-content">
+            <h5>Images from <a href="https://www.flaticon.com/">Flaticon</a>:</h5>
+            <ul>
+                <li>
+                    <a href="https://www.flaticon.com/free-icons/image-to-pdf" title="image to pdf icons">Image to pdf icons created by IconBaandar - Flaticon</a>
+                </li>
+                <li>
+                    <a href="https://www.flaticon.com/free-icons/merge" title="merge icons">Merge icons created by iconixar - Flaticon</a>
+                </li>
+                <li>
+                    <a href="https://www.flaticon.com/free-icons/pdf" title="pdf icons">Pdf icons created by juicy_fish - Flaticon</a>
+                </li>
+                <li>
+                    <a href="https://www.flaticon.com/free-icons/file-type" title="file type icons">File type icons created by Md Tanvirul Haque - Flaticon</a>
+                </li>
+            </ul>
+            <h5>Background texture from <a href="https://www.toptal.com/designers/subtlepatterns/moroccan-flower-dark-pattern/">here</a></h5>
+        </div>
+        <div class="modal-footer">
+            <button id="closeCredits">Close</button>
+        </div>
+    </div>
+
+    <!-- Overlay for Modals -->
+    <div id="overlay" class="overlay"></div>
+
+    <script>
+        // Modal Elements
+        const aboutModal = document.getElementById('aboutModal');
+        const creditsModal = document.getElementById('creditsModal');
+        const overlay = document.getElementById('overlay');
+
+        // Buttons to open/close modals
+        const openAbout = document.getElementById('openAbout');
+        const closeAbout = document.getElementById('closeAbout');
+        const openCredits = document.getElementById('openCredits');
+        const closeCredits = document.getElementById('closeCredits');
+
+        // Open and close modals
+        openAbout.addEventListener('click', () => toggleModal(aboutModal));
+        closeAbout.addEventListener('click', () => toggleModal(aboutModal));
+        openCredits.addEventListener('click', () => toggleModal(creditsModal));
+        closeCredits.addEventListener('click', () => toggleModal(creditsModal));
+
+        // Overlay click closes modals
+        overlay.addEventListener('click', () => {
+            aboutModal.classList.remove('active');
+            creditsModal.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        function toggleModal(modal) {
+            const isActive = modal.classList.contains('active');
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            if (!isActive) {
+                modal.classList.add('active');
+                overlay.classList.add('active');
+            } else {
+                modal.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
